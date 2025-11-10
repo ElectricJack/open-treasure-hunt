@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt Builder</title>
+    <style>
+        /* Minimal Bootstrap-like styles */
+        *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5;color:#212529;background:#f8f9fa}h1,h2,h3,h4{margin-top:0;margin-bottom:.5rem;font-weight:600}h1{font-size:2.5rem}h2{font-size:2rem}h3{font-size:1.75rem}h4{font-size:1.5rem}p{margin-top:0;margin-bottom:1rem}.container{width:100%;max-width:1200px;margin:0 auto;padding:20px}.btn{display:inline-block;padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;text-align:center;text-decoration:none;vertical-align:middle;cursor:pointer;user-select:none;border:1px solid transparent;border-radius:.375rem;transition:all .15s}.btn-primary{color:#fff;background-color:#0d6efd;border-color:#0d6efd}.btn-primary:hover{background-color:#0b5ed7}.btn-success{color:#fff;background-color:#198754;border-color:#198754}.btn-success:hover{background-color:#157347}.btn-danger{color:#fff;background-color:#dc3545;border-color:#dc3545}.btn-danger:hover{background-color:#bb2d3b}.btn-secondary{color:#fff;background-color:#6c757d;border-color:#6c757d}.btn-secondary:hover{background-color:#5c636a}.btn-sm{padding:.25rem .5rem;font-size:.875rem}.card{background:#fff;border:1px solid rgba(0,0,0,.125);border-radius:.375rem;margin-bottom:1rem;padding:1.5rem}.form-label{display:block;margin-bottom:.5rem;font-weight:500}.form-control{display:block;width:100%;padding:.375rem .75rem;font-size:1rem;line-height:1.5;color:#212529;background-color:#fff;border:1px solid #ced4da;border-radius:.375rem;margin-bottom:1rem}.form-control:focus{border-color:#86b7fe;outline:0;box-shadow:0 0 0 .25rem rgba(13,110,253,.25)}textarea.form-control{min-height:150px;font-family:monospace}.alert{padding:1rem;margin-bottom:1rem;border:1px solid transparent;border-radius:.375rem}.alert-info{color:#055160;background-color:#cff4fc;border-color:#b6effb}.alert-warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5}.alert-success{color:#0f5132;background-color:#d1e7dd;border-color:#badbcc}.mb-3{margin-bottom:1rem}.mt-3{margin-top:1rem}.d-flex{display:flex}.justify-content-between{justify-content:space-between}.section-list{border:1px solid #dee2e6;border-radius:.375rem;padding:1rem;background:#f8f9fa}.section-item{background:#fff;border:1px solid #dee2e6;border-radius:.375rem;padding:1rem;margin-bottom:.5rem}.text-muted{color:#6c757d}code{background:#f8f9fa;padding:2px 6px;border-radius:3px;font-family:monospace;color:#d63384}
+
+        .header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:2rem 0;margin-bottom:2rem}.header h1{color:#fff;margin-bottom:.5rem}.tabs{display:flex;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab{padding:1rem 1.5rem;cursor:pointer;border:none;background:none;font-size:1rem}.tab.active{border-bottom:3px solid #0d6efd;color:#0d6efd;font-weight:600}.tab-content{display:none}.tab-content.active{display:block}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🏴‍☠️ Treasure Hunt Builder</h1>
+            <p>Create self-contained, encrypted treasure hunts with no server required</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchBuilderTab('basic')">Basic Info</button>
+            <button class="tab" onclick="switchBuilderTab('home')">Home Content</button>
+            <button class="tab" onclick="switchBuilderTab('sections')">Encrypted Sections</button>
+            <button class="tab" onclick="switchBuilderTab('export')">Export</button>
+        </div>
+
+        <!-- Tab: Basic Info -->
+        <div id="tab-basic" class="tab-content active">
+            <div class="card">
+                <h3>Basic Information</h3>
+                <div>
+                    <label class="form-label">Treasure Hunt Title:</label>
+                    <input type="text" class="form-control" id="hunt-title"
+                           placeholder="My Awesome Treasure Hunt" value="My Treasure Hunt">
+                </div>
+                <div class="alert alert-info">
+                    <strong>💡 Tip:</strong> Give your treasure hunt a memorable name!
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Home Content -->
+        <div id="tab-home" class="tab-content">
+            <div class="card">
+                <h3>Home Page Content</h3>
+                <p>This is the first thing hunters see. Add puzzles, clues, and instructions here.</p>
+
+                <label class="form-label">HTML Content:</label>
+                <textarea class="form-control" id="home-content" rows="15"
+                          placeholder="Enter HTML content for the home page..."><h3>Welcome to My Treasure Hunt!</h3>
+<p>Solve puzzles and collect answers to unlock hidden sections.</p>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h5>🧩 First Puzzle</h5>
+    </div>
+    <div class="card-body">
+        <p>Add your first puzzle here!</p>
+    </div>
+</div></textarea>
+
+                <div class="alert alert-warning mt-3">
+                    <strong>⚠️ Note:</strong> You can use HTML here. Puzzles should collect answers using:
+                    <code>TreasureHunt.addAnswer('your-answer')</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Encrypted Sections -->
+        <div id="tab-sections" class="tab-content">
+            <div class="card">
+                <div class="d-flex justify-content-between">
+                    <h3>Encrypted Sections</h3>
+                    <button class="btn btn-primary" onclick="addSection()">+ Add Section</button>
+                </div>
+                <p>Each section is encrypted with a password. Hunters must solve puzzles to get the password.</p>
+
+                <div id="sections-list" class="section-list">
+                    <p class="text-muted">No sections yet. Click "Add Section" to create one.</p>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <strong>💡 How it works:</strong>
+                    <ul style="margin:0">
+                        <li>Define a password (can be composed from multiple puzzle answers)</li>
+                        <li>Add HTML content for this section</li>
+                        <li>Content gets encrypted with the password</li>
+                        <li>Only the correct password will decrypt it!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Export -->
+        <div id="tab-export" class="tab-content">
+            <div class="card">
+                <h3>Export Your Treasure Hunt</h3>
+                <p>Generate a single HTML file containing your entire treasure hunt.</p>
+
+                <button class="btn btn-success btn-lg" onclick="generateHunt()">
+                    📦 Generate Treasure Hunt
+                </button>
+
+                <div id="export-status" class="mt-3"></div>
+
+                <div class="alert alert-warning mt-3">
+                    <strong>Before exporting:</strong>
+                    <ul style="margin:0">
+                        <li>Make sure you've set a title</li>
+                        <li>Add home page content with initial puzzles</li>
+                        <li>Create at least one encrypted section</li>
+                        <li>Test your passwords!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Editor Modal (simulated) -->
+    <div id="section-editor" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; overflow:auto;">
+        <div style="max-width:800px; margin:50px auto; background:#fff; border-radius:8px; padding:2rem;">
+            <h3 id="editor-title">Add Section</h3>
+
+            <label class="form-label">Section ID:</label>
+            <input type="text" class="form-control" id="section-id"
+                   placeholder="section1 (alphanumeric, no spaces)">
+            <small class="text-muted">Unique identifier for this section</small>
+
+            <label class="form-label mt-3">Password:</label>
+            <input type="text" class="form-control" id="section-password"
+                   placeholder="The password to decrypt this section">
+            <small class="text-muted">This should be the answer(s) from your puzzles. Can be a single word or combination.</small>
+
+            <label class="form-label mt-3">Content (HTML):</label>
+            <textarea class="form-control" id="section-content" rows="10"
+                      placeholder="HTML content for this section..."></textarea>
+
+            <div class="mt-3">
+                <button class="btn btn-primary" onclick="saveSection()">Save Section</button>
+                <button class="btn btn-secondary" onclick="closeEditor()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Builder State
+        let sections = [];
+        let editingIndex = -1;
+
+        // Load template
+        let templateHTML = '';
+        fetch('../framework/treasure-hunt-template.html')
+            .then(r => r.text())
+            .then(html => {
+                templateHTML = html;
+                console.log('Template loaded');
+            })
+            .catch(e => {
+                console.error('Failed to load template:', e);
+                // Fallback: provide error message
+            });
+
+        // Tab switching
+        function switchBuilderTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Section management
+        function addSection() {
+            editingIndex = -1;
+            document.getElementById('editor-title').textContent = 'Add Section';
+            document.getElementById('section-id').value = '';
+            document.getElementById('section-password').value = '';
+            document.getElementById('section-content').value = '';
+            document.getElementById('section-editor').style.display = 'block';
+        }
+
+        function editSection(index) {
+            editingIndex = index;
+            const section = sections[index];
+            document.getElementById('editor-title').textContent = 'Edit Section';
+            document.getElementById('section-id').value = section.id;
+            document.getElementById('section-password').value = section.password;
+            document.getElementById('section-content').value = section.content;
+            document.getElementById('section-editor').style.display = 'block';
+        }
+
+        function deleteSection(index) {
+            if (confirm('Delete this section?')) {
+                sections.splice(index, 1);
+                renderSections();
+            }
+        }
+
+        function closeEditor() {
+            document.getElementById('section-editor').style.display = 'none';
+        }
+
+        function saveSection() {
+            const id = document.getElementById('section-id').value.trim();
+            const password = document.getElementById('section-password').value.trim();
+            const content = document.getElementById('section-content').value;
+
+            if (!id || !password || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Validate ID (alphanumeric)
+            if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+                alert('Section ID must be alphanumeric (no spaces)');
+                return;
+            }
+
+            const section = { id, password, content };
+
+            if (editingIndex >= 0) {
+                sections[editingIndex] = section;
+            } else {
+                // Check for duplicate ID
+                if (sections.some(s => s.id === id)) {
+                    alert('Section ID must be unique');
+                    return;
+                }
+                sections.push(section);
+            }
+
+            renderSections();
+            closeEditor();
+        }
+
+        function renderSections() {
+            const container = document.getElementById('sections-list');
+
+            if (sections.length === 0) {
+                container.innerHTML = '<p class="text-muted">No sections yet. Click "Add Section" to create one.</p>';
+                return;
+            }
+
+            container.innerHTML = sections.map((section, index) => `
+                <div class="section-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>${section.id}</strong>
+                            <br>
+                            <small class="text-muted">Password: <code>${section.password}</code></small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-secondary" onclick="editSection(${index})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSection(${index})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Cryptography functions (must match the framework)
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function deriveKey(password) {
+            const passwordHash = await sha256(password);
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                new TextEncoder().encode(passwordHash),
+                'PBKDF2',
+                false,
+                ['deriveKey']
+            );
+
+            return await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: new TextEncoder().encode('treasure-hunt-salt-v1'),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encrypt(text, password) {
+            const key = await deriveKey(password);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encoded = new TextEncoder().encode(text);
+
+            const ciphertext = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encoded
+            );
+
+            const result = new Uint8Array(iv.length + ciphertext.byteLength);
+            result.set(iv);
+            result.set(new Uint8Array(ciphertext), iv.length);
+
+            return btoa(String.fromCharCode.apply(null, result));
+        }
+
+        function compress(data) {
+            return btoa(unescape(encodeURIComponent(data)));
+        }
+
+        // Generate treasure hunt
+        async function generateHunt() {
+            const statusEl = document.getElementById('export-status');
+            statusEl.innerHTML = '<div class="alert alert-info">Generating treasure hunt...</div>';
+
+            try {
+                const title = document.getElementById('hunt-title').value.trim();
+                const homeContent = document.getElementById('home-content').value;
+
+                if (!title || !homeContent) {
+                    throw new Error('Please set a title and home content');
+                }
+
+                if (sections.length === 0) {
+                    throw new Error('Please add at least one encrypted section');
+                }
+
+                // Encrypt all sections
+                const blobs = {};
+                for (const section of sections) {
+                    const compressed = compress(section.content);
+                    const encrypted = await encrypt(compressed, section.password);
+                    blobs[section.id] = encrypted;
+                }
+
+                // Generate configuration
+                const config = {
+                    huntTitle: title,
+                    homeContent: homeContent,
+                    blobs: blobs
+                };
+
+                // Insert into template
+                if (!templateHTML) {
+                    throw new Error('Template not loaded yet. Please wait and try again.');
+                }
+
+                let finalHTML = templateHTML;
+
+                // Replace configuration
+                const configStr = JSON.stringify(config, null, 12);
+                finalHTML = finalHTML.replace(
+                    /\/\* TREASURE_HUNT_CONFIG_START \*\/[\s\S]*?\/\* TREASURE_HUNT_CONFIG_END \*\//,
+                    `/* TREASURE_HUNT_CONFIG_START */\n            TreasureHunt.configure(${configStr});\n            /* TREASURE_HUNT_CONFIG_END */`
+                );
+
+                // Download file
+                const blob = new Blob([finalHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = title.toLowerCase().replace(/\s+/g, '-') + '.html';
+                a.click();
+
+                statusEl.innerHTML = '<div class="alert alert-success">✅ Treasure hunt generated successfully! File downloaded.</div>';
+
+            } catch (error) {
+                statusEl.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+                console.error(error);
+            }
+        }
+
+        // Initialize
+        renderSections();
+    </script>
+</body>
+</html>

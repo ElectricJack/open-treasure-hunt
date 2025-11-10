@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt</title>
+    <style>
+        /* Bootstrap 5.3.0 CSS - Embedded (minimal version) */
+        :root{--bs-blue:#0d6efd;--bs-indigo:#6610f2;--bs-purple:#6f42c1;--bs-pink:#d63384;--bs-red:#dc3545;--bs-orange:#fd7e14;--bs-yellow:#ffc107;--bs-green:#198754;--bs-teal:#20c997;--bs-cyan:#0dcaf0;--bs-black:#000;--bs-white:#fff;--bs-gray:#6c757d;--bs-gray-dark:#343a40;--bs-primary:#0d6efd;--bs-secondary:#6c757d;--bs-success:#198754;--bs-info:#0dcaf0;--bs-warning:#ffc107;--bs-danger:#dc3545;--bs-light:#f8f9fa;--bs-dark:#212529;--bs-font-sans-serif:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--bs-body-font-family:var(--bs-font-sans-serif);--bs-body-font-size:1rem;--bs-body-font-weight:400;--bs-body-line-height:1.5;--bs-body-color:#212529;--bs-body-bg:#fff}*,::after,::before{box-sizing:border-box}body{margin:0;font-family:var(--bs-body-font-family);font-size:var(--bs-body-font-size);font-weight:var(--bs-body-font-weight);line-height:var(--bs-body-line-height);color:var(--bs-body-color);background-color:var(--bs-body-bg);-webkit-text-size-adjust:100%}h1,h2,h3,h4,h5{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:2.5rem}h2{font-size:2rem}h3{font-size:1.75rem}h4{font-size:1.5rem}h5{font-size:1.25rem}p{margin-top:0;margin-bottom:1rem}a{color:var(--bs-blue);text-decoration:underline}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[type=button],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}.container{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto;max-width:1140px}.row{display:flex;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.col-12{flex:0 0 auto;width:100%;padding-right:15px;padding-left:15px}.col-md-6{flex:0 0 auto;width:50%;padding-right:15px;padding-left:15px}.col-lg-4{flex:0 0 auto;width:33.333%;padding-right:15px;padding-left:15px}@media (max-width:768px){.col-md-6,.col-lg-4{width:100%}}.form-label{margin-bottom:.5rem;display:block}.form-control{display:block;width:100%;padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:var(--bs-body-color);background-color:#fff;border:1px solid #ced4da;border-radius:.375rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}.form-control:focus{color:var(--bs-body-color);background-color:#fff;border-color:#86b7fe;outline:0;box-shadow:0 0 0 .25rem rgba(13,110,253,.25)}.btn{display:inline-block;padding:.375rem .75rem;font-size:1rem;font-weight:400;line-height:1.5;color:#212529;text-align:center;text-decoration:none;vertical-align:middle;cursor:pointer;user-select:none;border:1px solid transparent;border-radius:.375rem;background-color:transparent;transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out}.btn:hover{color:#212529}.btn-primary{color:#fff;background-color:#0d6efd;border-color:#0d6efd}.btn-primary:hover{background-color:#0b5ed7;border-color:#0a58ca}.btn-success{color:#fff;background-color:#198754;border-color:#198754}.btn-success:hover{background-color:#157347;border-color:#146c43}.btn-secondary{color:#fff;background-color:#6c757d;border-color:#6c757d}.btn-secondary:hover{background-color:#5c636a;border-color:#565e64}.btn-sm{padding:.25rem .5rem;font-size:.875rem}.btn-danger{color:#fff;background-color:#dc3545;border-color:#dc3545}.btn-danger:hover{background-color:#bb2d3b;border-color:#b02a37}.card{position:relative;display:flex;flex-direction:column;min-width:0;word-wrap:break-word;background-color:#fff;border:1px solid rgba(0,0,0,.175);border-radius:.375rem;margin-bottom:1rem}.card-body{flex:1 1 auto;padding:1rem}.card-title{margin-bottom:.5rem}.card-header{padding:.5rem 1rem;margin-bottom:0;background-color:rgba(0,0,0,.03);border-bottom:1px solid rgba(0,0,0,.175)}.badge{display:inline-block;padding:.35em .65em;font-size:.75em;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.375rem}.bg-success{background-color:#198754!important}.bg-secondary{background-color:#6c757d!important}.bg-warning{background-color:#ffc107!important}.bg-info{background-color:#0dcaf0!important}.alert{position:relative;padding:1rem;margin-bottom:1rem;border:1px solid transparent;border-radius:.375rem}.alert-success{color:#0f5132;background-color:#d1e7dd;border-color:#badbcc}.alert-danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7}.alert-info{color:#055160;background-color:#cff4fc;border-color:#b6effb}.text-success{color:#198754!important}.text-muted{color:#6c757d!important}.text-center{text-align:center!important}.mb-1{margin-bottom:.25rem!important}.mb-2{margin-bottom:.5rem!important}.mb-3{margin-bottom:1rem!important}.mb-4{margin-bottom:1.5rem!important}.mt-2{margin-top:.5rem!important}.mt-3{margin-top:1rem!important}.mt-4{margin-top:1.5rem!important}.me-2{margin-right:.5rem!important}.d-flex{display:flex!important}.justify-content-between{justify-content:space-between!important}.align-items-center{align-items:center!important}.nav{display:flex;flex-wrap:wrap;padding-left:0;margin-bottom:0;list-style:none}.nav-link{display:block;padding:.5rem 1rem;color:#0d6efd;text-decoration:none;transition:color .15s ease-in-out}.nav-link:hover{color:#0a58ca}.nav-tabs{border-bottom:1px solid #dee2e6}.nav-tabs .nav-link{margin-bottom:-1px;background:0 0;border:1px solid transparent;border-top-left-radius:.375rem;border-top-right-radius:.375rem}.nav-tabs .nav-link:hover{border-color:#e9ecef #e9ecef #dee2e6;isolation:isolate}.nav-tabs .nav-link.active{color:#495057;background-color:#fff;border-color:#dee2e6 #dee2e6 #fff;font-weight:600}.tab-content>.tab-pane{display:none}.tab-content>.active{display:block}.progress{display:flex;height:1rem;overflow:hidden;font-size:.75rem;background-color:#e9ecef;border-radius:.375rem}.progress-bar{display:flex;flex-direction:column;justify-content:center;overflow:hidden;color:#fff;text-align:center;white-space:nowrap;background-color:#0d6efd;transition:width .6s ease}
+
+        /* Custom styles */
+        body {
+            padding:20px 0;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            min-height:100vh;
+        }
+        .treasure-container {
+            background:white;
+            border-radius:15px;
+            box-shadow:0 10px 40px rgba(0,0,0,0.2);
+            padding:30px;
+            margin-bottom:20px;
+        }
+        .treasure-title {
+            color:#667eea;
+            font-weight:700;
+            margin-bottom:20px;
+        }
+        .stats-card {
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color:white;
+            border:none;
+        }
+        .answer-box {
+            background:#f8f9fa;
+            border:2px dashed #dee2e6;
+            border-radius:8px;
+            padding:15px;
+            margin:10px 0;
+        }
+        .answer-item {
+            background:white;
+            border:1px solid #dee2e6;
+            border-radius:6px;
+            padding:10px;
+            margin:5px 0;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .blob-item {
+            border-left:4px solid #6c757d;
+            transition:all 0.3s ease;
+        }
+        .blob-item.unlocked {
+            border-left-color:#198754;
+        }
+        .blob-item:hover {
+            transform:translateY(-2px);
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+        code {
+            background:#f8f9fa;
+            padding:2px 6px;
+            border-radius:3px;
+            font-family:monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="treasure-container">
+            <h1 class="treasure-title" id="huntTitle">Treasure Hunt</h1>
+
+            <!-- Stats Section -->
+            <div class="card stats-card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Progress</h5>
+                            <p class="mb-0">
+                                <span id="unlockedCount">0</span> / <span id="totalBlobs">0</span> Sections Unlocked
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-secondary" onclick="TreasureHunt.resetProgress()">Reset Hunt</button>
+                        </div>
+                    </div>
+                    <div class="progress mt-3" style="height:25px;">
+                        <div class="progress-bar" id="progressBar" style="width:0%">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Tabs for sections -->
+            <ul class="nav nav-tabs" id="sectionTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-target="#home" type="button" role="tab">
+                        🏠 Home
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3" id="tabContent">
+                <!-- Home tab -->
+                <div class="tab-pane fade show active" id="home" role="tabpanel">
+                    <div id="homeContent">
+                        <!-- Initial content will be inserted here -->
+                    </div>
+
+                    <!-- Answer Collection System -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5>🔑 Key Composer</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Collect answers from puzzles to form decryption keys.</p>
+
+                            <!-- Collected Answers -->
+                            <div class="answer-box">
+                                <strong>Collected Answers:</strong>
+                                <div id="answersCollected"></div>
+                                <button class="btn btn-sm btn-secondary mt-2" onclick="TreasureHunt.clearAnswers()">
+                                    Clear All
+                                </button>
+                            </div>
+
+                            <!-- Manual Answer Entry -->
+                            <div class="mt-3">
+                                <label class="form-label">Add Answer:</label>
+                                <div class="d-flex">
+                                    <input type="text" class="form-control me-2" id="manualAnswer"
+                                           placeholder="Enter an answer">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('manualAnswer').value)">
+                                        Add
+                                    </button>
+                                </div>
+                                <small class="text-muted">Answers can come from puzzles, QR codes, GPS locations, etc.</small>
+                            </div>
+
+                            <!-- Key Generation Options -->
+                            <div class="mt-4">
+                                <label class="form-label">Generate Key:</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success w-100 mb-2" onclick="TreasureHunt.tryComposedKey('concat')">
+                                            Try Concatenated (ABC)
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success w-100 mb-2" onclick="TreasureHunt.tryComposedKey('reverse')">
+                                            Try Reversed (CBA)
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success w-100 mb-2" onclick="TreasureHunt.tryComposedKey('sorted')">
+                                            Try Sorted (ABC sorted)
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success w-100 mb-2" onclick="TreasureHunt.tryComposedKey('joined')">
+                                            Try Joined (A-B-C)
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Different key compositions will be tried against all locked sections.</small>
+                            </div>
+
+                            <!-- Direct Key Entry -->
+                            <div class="mt-4">
+                                <label class="form-label">Or Try Direct Key:</label>
+                                <div class="d-flex">
+                                    <input type="text" class="form-control me-2" id="directKey"
+                                           placeholder="Enter full decryption key">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.tryDirectKey(document.getElementById('directKey').value)">
+                                        Unlock
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Encrypted Sections -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5>🔒 Encrypted Sections</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">These sections are locked. Solve puzzles to collect keys and unlock them.</p>
+                            <div id="blobsContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Treasure Hunt Framework - Secure Key System
+        const TreasureHunt = {
+            config: {
+                huntTitle: "Treasure Hunt",
+                homeContent: "",
+                blobs: {}  // { blobId: encryptedData }
+            },
+            state: {
+                answers: [],  // Collected answers
+                unlockedBlobs: {}  // { blobId: content }
+            },
+
+            init: function() {
+                console.log('Initializing Treasure Hunt...');
+                this.loadState();
+                this.render();
+                this.updateStats();
+            },
+
+            // ===== State Management =====
+
+            saveState: function() {
+                // Save unlocked blob IDs and answers to localStorage
+                localStorage.setItem('th_unlocked', JSON.stringify(Object.keys(this.state.unlockedBlobs)));
+                localStorage.setItem('th_answers', JSON.stringify(this.state.answers));
+            },
+
+            loadState: function() {
+                try {
+                    const unlocked = JSON.parse(localStorage.getItem('th_unlocked') || '[]');
+                    const answers = JSON.parse(localStorage.getItem('th_answers') || '[]');
+
+                    this.state.answers = answers;
+
+                    // Re-unlock blobs (we need to re-derive the keys, but we'll just mark them as unlocked)
+                    // Note: We still don't store the actual keys, just which blobs are unlocked
+                    unlocked.forEach(blobId => {
+                        if (this.config.blobs[blobId]) {
+                            // We'll need to attempt unlock with stored answers
+                            // For now, just mark as unlocked
+                            this.state.unlockedBlobs[blobId] = '[Previously unlocked - content lost on refresh]';
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error loading state:', e);
+                }
+            },
+
+            resetProgress: function() {
+                if (confirm('Reset all progress? This will clear all unlocked sections and collected answers.')) {
+                    localStorage.removeItem('th_unlocked');
+                    localStorage.removeItem('th_answers');
+                    location.reload();
+                }
+            },
+
+            // ===== Cryptography =====
+
+            sha256: async function(message) {
+                const msgBuffer = new TextEncoder().encode(message);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+
+            deriveKey: async function(password) {
+                const passwordHash = await this.sha256(password);
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    new TextEncoder().encode(passwordHash),
+                    'PBKDF2',
+                    false,
+                    ['deriveKey']
+                );
+
+                return await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: new TextEncoder().encode('treasure-hunt-salt-v1'),
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+            },
+
+            encrypt: async function(text, password) {
+                const key = await this.deriveKey(password);
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(text);
+
+                const ciphertext = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    encoded
+                );
+
+                const result = new Uint8Array(iv.length + ciphertext.byteLength);
+                result.set(iv);
+                result.set(new Uint8Array(ciphertext), iv.length);
+
+                return btoa(String.fromCharCode.apply(null, result));
+            },
+
+            decrypt: async function(encryptedData, password) {
+                try {
+                    const key = await this.deriveKey(password);
+                    const data = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+                    const iv = data.slice(0, 12);
+                    const ciphertext = data.slice(12);
+
+                    const decrypted = await crypto.subtle.decrypt(
+                        { name: 'AES-GCM', iv: iv },
+                        key,
+                        ciphertext
+                    );
+
+                    return new TextDecoder().decode(decrypted);
+                } catch (e) {
+                    return null;  // Decryption failed
+                }
+            },
+
+            // Gzip compression/decompression (simple base64 for now)
+            compress: function(data) {
+                return btoa(unescape(encodeURIComponent(data)));
+            },
+
+            decompress: function(data) {
+                try {
+                    return decodeURIComponent(escape(atob(data)));
+                } catch (e) {
+                    return null;
+                }
+            },
+
+            // ===== Answer Collection =====
+
+            addAnswer: function(answer) {
+                if (!answer || answer.trim() === '') {
+                    this.showAlert('Please enter an answer', 'warning');
+                    return;
+                }
+
+                answer = answer.trim();
+
+                if (this.state.answers.includes(answer)) {
+                    this.showAlert('Answer already collected', 'info');
+                    return;
+                }
+
+                this.state.answers.push(answer);
+                this.saveState();
+                this.renderAnswers();
+                this.showAlert(`Answer "${answer}" collected!`, 'success');
+
+                // Clear input
+                const input = document.getElementById('manualAnswer');
+                if (input) input.value = '';
+            },
+
+            removeAnswer: function(answer) {
+                this.state.answers = this.state.answers.filter(a => a !== answer);
+                this.saveState();
+                this.renderAnswers();
+            },
+
+            clearAnswers: function() {
+                if (confirm('Clear all collected answers?')) {
+                    this.state.answers = [];
+                    this.saveState();
+                    this.renderAnswers();
+                }
+            },
+
+            // ===== Key Composition =====
+
+            composeKey: function(method) {
+                const answers = [...this.state.answers];
+
+                if (answers.length === 0) {
+                    return '';
+                }
+
+                switch (method) {
+                    case 'concat':
+                        return answers.join('');
+                    case 'reverse':
+                        return answers.reverse().join('');
+                    case 'sorted':
+                        return answers.sort().join('');
+                    case 'joined':
+                        return answers.join('-');
+                    default:
+                        return answers.join('');
+                }
+            },
+
+            // ===== Unlocking =====
+
+            tryDirectKey: async function(key) {
+                if (!key || key.trim() === '') {
+                    this.showAlert('Please enter a key', 'warning');
+                    return;
+                }
+
+                await this.attemptUnlockAll(key.trim());
+            },
+
+            tryComposedKey: async function(method) {
+                if (this.state.answers.length === 0) {
+                    this.showAlert('No answers collected yet!', 'warning');
+                    return;
+                }
+
+                const key = this.composeKey(method);
+                this.showAlert(`Trying key composition: ${method}...`, 'info');
+                await this.attemptUnlockAll(key);
+            },
+
+            attemptUnlockAll: async function(key) {
+                let unlocked = false;
+
+                for (const [blobId, encryptedData] of Object.entries(this.config.blobs)) {
+                    // Skip already unlocked
+                    if (this.state.unlockedBlobs[blobId]) continue;
+
+                    const decrypted = await this.decrypt(encryptedData, key);
+                    if (decrypted) {
+                        const decompressed = this.decompress(decrypted);
+                        if (decompressed) {
+                            // Successfully unlocked!
+                            this.state.unlockedBlobs[blobId] = decompressed;
+                            this.saveState();
+                            this.unlockBlob(blobId, decompressed);
+                            unlocked = true;
+                        }
+                    }
+                }
+
+                if (!unlocked) {
+                    this.showAlert('❌ No sections unlocked with this key', 'danger');
+                } else {
+                    this.updateStats();
+                    this.renderBlobs();
+
+                    // Check completion
+                    if (Object.keys(this.state.unlockedBlobs).length === Object.keys(this.config.blobs).length) {
+                        this.showAlert('🎉 Congratulations! All sections unlocked!', 'success');
+                    }
+                }
+            },
+
+            unlockBlob: function(blobId, content) {
+                this.showAlert(`✨ Section "${blobId}" unlocked!`, 'success');
+
+                // Create new tab
+                const tabId = `tab-${blobId}`;
+                const tabsContainer = document.getElementById('sectionTabs');
+                const contentContainer = document.getElementById('tabContent');
+
+                // Add tab button
+                const tabLi = document.createElement('li');
+                tabLi.className = 'nav-item';
+                tabLi.setAttribute('role', 'presentation');
+                tabLi.innerHTML = `
+                    <button class="nav-link" id="${tabId}-tab" data-bs-target="#${tabId}"
+                            type="button" role="tab">
+                        🔓 ${blobId}
+                    </button>
+                `;
+                tabsContainer.appendChild(tabLi);
+
+                // Add tab content
+                const tabPane = document.createElement('div');
+                tabPane.className = 'tab-pane fade';
+                tabPane.id = tabId;
+                tabPane.setAttribute('role', 'tabpanel');
+                tabPane.innerHTML = content;
+                contentContainer.appendChild(tabPane);
+
+                // Set up click handler
+                tabLi.querySelector('button').addEventListener('click', () => {
+                    this.switchTab(tabId);
+                });
+
+                // Auto-switch to new tab
+                this.switchTab(tabId);
+            },
+
+            switchTab: function(tabId) {
+                // Deactivate all
+                document.querySelectorAll('.nav-link').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+
+                // Activate selected
+                const tabBtn = document.getElementById(`${tabId}-tab`);
+                const tabPane = document.getElementById(tabId);
+
+                if (tabBtn && tabPane) {
+                    tabBtn.classList.add('active');
+                    tabPane.classList.add('show', 'active');
+                }
+            },
+
+            // ===== Rendering =====
+
+            render: function() {
+                document.getElementById('huntTitle').textContent = this.config.huntTitle;
+                document.getElementById('homeContent').innerHTML = this.config.homeContent;
+                this.renderAnswers();
+                this.renderBlobs();
+            },
+
+            renderAnswers: function() {
+                const container = document.getElementById('answersCollected');
+
+                if (this.state.answers.length === 0) {
+                    container.innerHTML = '<p class="text-muted mb-0"><small>No answers collected yet</small></p>';
+                    return;
+                }
+
+                container.innerHTML = this.state.answers.map((answer, idx) => `
+                    <div class="answer-item">
+                        <span><strong>${idx + 1}.</strong> <code>${this.escapeHtml(answer)}</code></span>
+                        <button class="btn btn-sm btn-danger" onclick="TreasureHunt.removeAnswer('${this.escapeHtml(answer)}')">
+                            Remove
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            renderBlobs: function() {
+                const container = document.getElementById('blobsContainer');
+                const blobs = Object.keys(this.config.blobs);
+
+                if (blobs.length === 0) {
+                    container.innerHTML = '<p class="text-muted">No encrypted sections in this hunt.</p>';
+                    return;
+                }
+
+                container.innerHTML = blobs.map(blobId => {
+                    const unlocked = this.state.unlockedBlobs[blobId];
+                    const unlockedClass = unlocked ? 'unlocked' : '';
+
+                    return `
+                        <div class="card blob-item ${unlockedClass} mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${blobId}</strong>
+                                        ${unlocked ? '<span class="badge bg-success ms-2">Unlocked</span>' : '<span class="badge bg-secondary ms-2">Locked</span>'}
+                                    </div>
+                                    ${unlocked ? `
+                                        <button class="btn btn-sm btn-success" onclick="TreasureHunt.switchTab('tab-${blobId}')">
+                                            View
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            updateStats: function() {
+                const unlocked = Object.keys(this.state.unlockedBlobs).length;
+                const total = Object.keys(this.config.blobs).length;
+                const percentage = total > 0 ? Math.round((unlocked / total) * 100) : 0;
+
+                document.getElementById('unlockedCount').textContent = unlocked;
+                document.getElementById('totalBlobs').textContent = total;
+                document.getElementById('progressBar').style.width = percentage + '%';
+                document.getElementById('progressBar').textContent = percentage + '%';
+            },
+
+            // ===== Utilities =====
+
+            showAlert: function(message, type = 'info') {
+                const container = document.getElementById('alertContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = this.escapeHtml(message);
+                container.appendChild(alert);
+
+                setTimeout(() => alert.remove(), 5000);
+            },
+
+            escapeHtml: function(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            configure: function(config) {
+                this.config = { ...this.config, ...config };
+                this.init();
+            }
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            /* TREASURE_HUNT_CONFIG_START */
+            TreasureHunt.configure({
+                huntTitle: "Sample Treasure Hunt",
+                homeContent: `
+                    <h3>Welcome to the Treasure Hunt!</h3>
+                    <p>This treasure hunt uses a secure key system. Solve puzzles to collect answers,
+                       then use those answers to form decryption keys.</p>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>🧩 First Clue</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>What is the answer to life, the universe, and everything?</p>
+                            <p class="text-muted"><small>Hint: It's a number from a famous book.</small></p>
+                            <button class="btn btn-primary" onclick="TreasureHunt.addAnswer('42')">
+                                Submit Answer: 42
+                            </button>
+                        </div>
+                    </div>
+                `,
+                blobs: {
+                    // Example encrypted blob would go here
+                    // "section1": "base64-encrypted-data..."
+                }
+            });
+            /* TREASURE_HUNT_CONFIG_END */
+        });
+    </script>
+</body>
+</html>
