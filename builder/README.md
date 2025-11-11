@@ -4,12 +4,20 @@ The visual treasure hunt builder makes it easy to create complex, encrypted trea
 
 ## 🎯 Quick Start
 
-1. Open `builder/index.html` in your web browser
+1. Open `builder/index.html` in your web browser (or online at GitHub Pages)
 2. Fill in your hunt title
 3. Create blocks (sections) for your treasure hunt
-4. Add puzzles from the library
-5. Define gates that connect puzzles to unlocked blocks
-6. Export as a single HTML file
+4. Add puzzles to blocks from the puzzle library
+5. Define gates in blocks that unlock other blocks
+6. Export as a single HTML file with progressive puzzle discovery
+
+## ✨ What's New - Block-Centric Architecture
+
+The builder now uses a **block-centric architecture** where:
+- Each block contains its own puzzles and gates
+- Puzzles and gates are only revealed when their parent block is unlocked
+- Gates reference puzzles within the same block
+- Progressive discovery keeps the hunt mysterious
 
 ## 📦 Blocks & Content
 
@@ -216,21 +224,39 @@ Checklist:
 ### Exporting Your Hunt
 
 1. Click "📤 Export" in sidebar
-2. Review export options:
-   - ☑️ Minify output (smaller file)
-   - ☑️ Include comments (debugging)
-3. Click "📦 Generate Treasure Hunt"
-4. Wait for processing (encryption takes time)
-5. Download the generated HTML file
+2. Click "📦 Generate Treasure Hunt"
+3. Wait for processing:
+   - Loading template
+   - Generating puzzles
+   - Encrypting sections (uses Web Crypto API)
+   - Building configuration
+4. Download the generated HTML file automatically
 
 ### What Gets Exported
 
 The generated file contains:
-- Complete treasure hunt framework
-- All puzzle HTML
-- Story content and images (embedded)
-- Encrypted locked blocks
-- No passwords or answers (security!)
+- Complete treasure hunt framework with Web Crypto API
+- Start block HTML with all puzzles (visible)
+- Encrypted locked blocks (AES-256-GCM encryption)
+- Story content and images (embedded as base64)
+- **No passwords or answers stored anywhere** (security!)
+- Progressive discovery architecture
+
+### How Encryption Works
+
+1. For each gate in a block:
+   - Composes password from puzzle answers using composition method
+   - Generates HTML for the target block
+   - Compresses the HTML (base64 encoding)
+   - Encrypts with AES-256-GCM using PBKDF2 key derivation
+   - Stores encrypted blob with block ID as key
+
+2. In the treasure hunt:
+   - Start block is always visible
+   - Locked blocks appear as encrypted blobs
+   - Hunters collect answers and compose keys
+   - Successful decryption reveals the next block
+   - New puzzles and gates progressively discovered
 
 ### File Size Considerations
 

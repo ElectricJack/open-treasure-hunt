@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt Builder</title>
+    <style>
+        /* Minimal Bootstrap-like styles */
+        *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;color:#212529;background:#f8f9fa}h1,h2,h3,h4{margin-top:0;margin-bottom:.5rem;font-weight:600}h1{font-size:2rem}h2{font-size:1.5rem}h3{font-size:1.25rem}h4{font-size:1.1rem}p{margin-top:0;margin-bottom:1rem}.container{width:100%;max-width:1400px;margin:0 auto;padding:20px}.btn{display:inline-block;padding:.5rem 1rem;margin:0.25rem;text-decoration:none;border-radius:.375rem;font-weight:500;border:1px solid transparent;cursor:pointer;font-size:.875rem;transition:all .15s;background:#e9ecef;color:#000}.btn:hover{opacity:.9;transform:translateY(-1px)}.btn-primary{background:#0d6efd;color:#fff;border-color:#0d6efd}.btn-success{background:#198754;color:#fff;border-color:#198754}.btn-danger{background:#dc3545;color:#fff;border-color:#dc3545}.btn-warning{background:#ffc107;color:#000;border-color:#ffc107}.btn-secondary{background:#6c757d;color:#fff;border-color:#6c757d}.btn-sm{padding:.25rem .5rem;font-size:.75rem}.card{background:#fff;border:1px solid #dee2e6;border-radius:.375rem;margin-bottom:1rem;padding:1rem}.card-header{margin:-1rem -1rem 1rem -1rem;padding:.75rem 1rem;background:#f8f9fa;border-bottom:1px solid #dee2e6;border-radius:.375rem .375rem 0 0;font-weight:600}.form-label{display:block;margin-bottom:.25rem;font-weight:500;font-size:.875rem}.form-control{display:block;width:100%;padding:.5rem .75rem;font-size:.875rem;line-height:1.5;color:#212529;background-color:#fff;border:1px solid #ced4da;border-radius:.375rem;margin-bottom:.75rem}.form-control:focus{border-color:#86b7fe;outline:0;box-shadow:0 0 0 .25rem rgba(13,110,253,.25)}textarea.form-control{min-height:100px;font-family:inherit}select.form-control{cursor:pointer}.alert{padding:.75rem 1rem;margin-bottom:1rem;border:1px solid transparent;border-radius:.375rem;font-size:.875rem}.alert-info{color:#055160;background-color:#cff4fc;border-color:#b6effb}.alert-warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5}.alert-success{color:#0f5132;background-color:#d1e7dd;border-color:#badbcc}.alert-danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7}.badge{display:inline-block;padding:.25em .5em;font-size:.75em;font-weight:600;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25rem}.bg-primary{background-color:#0d6efd!important}.bg-success{background-color:#198754!important}.bg-secondary{background-color:#6c757d!important}.bg-warning{background-color:#ffc107!important;color:#000!important}.bg-danger{background-color:#dc3545!important}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:1rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:1rem}.d-flex{display:flex}.justify-content-between{justify-content:space-between}.align-items-center{align-items:center}.gap-2{gap:.5rem}.text-muted{color:#6c757d}code{background:#f8f9fa;padding:2px 6px;border-radius:3px;font-family:monospace;color:#d63384;font-size:.875em}
+
+        .header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:1.5rem 2rem;margin-bottom:1rem}.header h1{color:#fff;margin-bottom:.25rem;font-size:1.75rem}.sidebar{width:280px;background:#fff;border-right:1px solid #dee2e6;height:calc(100vh - 100px);overflow-y:auto;padding:1rem}.main-content{flex:1;padding:1rem;overflow-y:auto;height:calc(100vh - 100px)}.layout{display:flex;gap:0}.section-nav{list-style:none;padding:0;margin:0}.section-nav li{padding:.5rem .75rem;margin:.25rem 0;border-radius:.375rem;cursor:pointer;font-size:.875rem}.section-nav li:hover{background:#f8f9fa}.section-nav li.active{background:#e7f1ff;color:#0d6efd;font-weight:600}.block-item{border:2px solid #dee2e6;border-radius:.5rem;padding:1rem;margin:.75rem 0;background:#fff;position:relative}.block-item.locked{border-left:4px solid #ffc107}.block-item.start{border-left:4px solid #198754}.puzzle-item{border:1px solid #dee2e6;border-radius:.375rem;padding:.75rem;margin:.5rem 0;background:#f8f9fa}.gate-item{border:2px dashed #0d6efd;border-radius:.375rem;padding:.75rem;margin:.75rem 0;background:#e7f1ff}.puzzle-config{background:#fff;border:1px solid #dee2e6;padding:1rem;border-radius:.375rem;margin:.5rem 0}.image-preview{max-width:200px;max-height:200px;border-radius:.375rem;margin:.5rem 0;border:1px solid #dee2e6}
+
+        /* Modal */
+        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;overflow:auto;padding:2rem}.modal.show{display:block}.modal-content{max-width:800px;margin:0 auto;background:#fff;border-radius:.5rem;padding:2rem;max-height:90vh;overflow-y:auto}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #dee2e6}.modal-header h3{margin:0}.modal-close{font-size:1.5rem;cursor:pointer;color:#6c757d;background:none;border:none;padding:0;width:30px;height:30px;border-radius:50%}.modal-close:hover{background:#f8f9fa}
+
+        /* Flow diagram */
+        .flow-container{background:#fff;border:1px solid #dee2e6;border-radius:.5rem;padding:1.5rem;min-height:300px}.flow-block{display:inline-block;padding:1rem;margin:.5rem;border:2px solid #0d6efd;border-radius:.5rem;background:#fff;min-width:120px;text-align:center;font-size:.875rem}.flow-arrow{display:inline-block;margin:0 .5rem;font-size:1.5rem;color:#6c757d}
+
+        .tabs{display:flex;border-bottom:2px solid #dee2e6;margin-bottom:1rem;gap:.5rem}.tab-btn{padding:.75rem 1.5rem;cursor:pointer;border:none;background:none;font-size:.875rem;font-weight:500;border-bottom:3px solid transparent;color:#6c757d}.tab-btn:hover{color:#212529}.tab-btn.active{color:#0d6efd;border-bottom-color:#0d6efd}.tab-content{display:none}.tab-content.active{display:block}
+
+        .sortable-list{list-style:none;padding:0;margin:0}.sortable-item{padding:.5rem;margin:.25rem 0;background:#f8f9fa;border:1px solid #dee2e6;border-radius:.375rem;cursor:move;display:flex;justify-content:space-between;align-items:center}.sortable-item:hover{background:#e9ecef}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🏴‍☠️ Treasure Hunt Builder</h1>
+            <p style="margin:0;opacity:.9;font-size:.875rem">Create treasure hunts with puzzles, gates, and encrypted content</p>
+        </div>
+    </div>
+
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h4 style="margin-bottom:1rem">Build Your Hunt</h4>
+            <ul class="section-nav">
+                <li class="active" onclick="showSection('overview')">📊 Overview</li>
+                <li onclick="showSection('blocks')">📦 Blocks & Content</li>
+                <li onclick="showSection('puzzles')">🧩 Puzzles</li>
+                <li onclick="showSection('gates')">🔐 Gates & Keys</li>
+                <li onclick="showSection('flow')">🗺️ Flow Diagram</li>
+                <li onclick="showSection('export')">📤 Export</li>
+            </ul>
+
+            <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid #dee2e6">
+                <button class="btn btn-sm btn-secondary w-100" onclick="saveProject()">💾 Save Project</button>
+                <button class="btn btn-sm btn-secondary w-100" onclick="loadProject()">📂 Load Project</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Overview Section -->
+            <div id="section-overview" class="tab-content active">
+                <h2>Treasure Hunt Overview</h2>
+
+                <div class="card">
+                    <div class="card-header">Basic Information</div>
+                    <label class="form-label">Hunt Title</label>
+                    <input type="text" class="form-control" id="hunt-title" placeholder="My Awesome Treasure Hunt">
+
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="hunt-description" rows="3" placeholder="A brief description of your treasure hunt..."></textarea>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Quick Stats</div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem">
+                        <div style="text-align:center;padding:1rem;background:#f8f9fa;border-radius:.375rem">
+                            <div style="font-size:2rem;font-weight:600;color:#0d6efd" id="stat-blocks">0</div>
+                            <div style="font-size:.875rem;color:#6c757d">Blocks</div>
+                        </div>
+                        <div style="text-align:center;padding:1rem;background:#f8f9fa;border-radius:.375rem">
+                            <div style="font-size:2rem;font-weight:600;color:#198754" id="stat-puzzles">0</div>
+                            <div style="font-size:.875rem;color:#6c757d">Puzzles</div>
+                        </div>
+                        <div style="text-align:center;padding:1rem;background:#f8f9fa;border-radius:.375rem">
+                            <div style="font-size:2rem;font-weight:600;color:#ffc107" id="stat-gates">0</div>
+                            <div style="font-size:.875rem;color:#6c757d">Gates</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Getting Started:</strong>
+                    <ol style="margin:.5rem 0 0 1.5rem;padding:0">
+                        <li>Create blocks for different sections of your hunt</li>
+                        <li>Add content (text, images) and puzzles to blocks</li>
+                        <li>Define gates that unlock blocks based on puzzle solutions</li>
+                        <li>Export your treasure hunt as a single HTML file</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Blocks Section -->
+            <div id="section-blocks" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Blocks & Content</h2>
+                    <button class="btn btn-primary" onclick="addBlock()">+ Add Block</button>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Blocks</strong> are sections of your treasure hunt. The <strong>Start Block</strong> is always visible. Other blocks can be locked and require solving puzzles to unlock.
+                </div>
+
+                <div id="blocks-container"></div>
+            </div>
+
+            <!-- Puzzles Section -->
+            <div id="section-puzzles" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Puzzles</h2>
+                    <button class="btn btn-primary" onclick="showPuzzleLibrary()">+ Add Puzzle</button>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Puzzles</strong> generate answers that can be used to unlock gates. Add puzzles to blocks, and their solutions will be collected by hunters.
+                </div>
+
+                <div id="puzzles-container"></div>
+            </div>
+
+            <!-- Gates Section -->
+            <div id="section-gates" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Gates & Keys</h2>
+                    <button class="btn btn-primary" onclick="addGate()">+ Add Gate</button>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Gates</strong> control access to locked blocks. Define which puzzle answers unlock each gate and how they combine to form the decryption key.
+                </div>
+
+                <div id="gates-container"></div>
+            </div>
+
+            <!-- Flow Diagram Section -->
+            <div id="section-flow" class="tab-content">
+                <h2>Flow Diagram</h2>
+                <div class="alert alert-info">
+                    Visual representation of how blocks, puzzles, and gates connect.
+                </div>
+                <div class="flow-container" id="flow-diagram">
+                    <!-- Generated dynamically -->
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div id="section-export" class="tab-content">
+                <h2>Export Your Treasure Hunt</h2>
+
+                <div class="card">
+                    <div class="card-header">Ready to Export?</div>
+                    <p>This will generate a single HTML file containing your entire treasure hunt with encrypted sections.</p>
+
+                    <div class="alert alert-warning">
+                        <strong>Before exporting, make sure:</strong>
+                        <ul style="margin:.5rem 0 0 1.5rem;padding:0">
+                            <li>You have at least one block</li>
+                            <li>Puzzles are configured correctly</li>
+                            <li>Gates have valid unlock conditions</li>
+                            <li>You've tested the flow</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-success btn-lg" onclick="generateHunt()" style="width:100%;padding:1rem;font-size:1.1rem">
+                        📦 Generate Treasure Hunt
+                    </button>
+
+                    <div id="export-status" class="mt-3"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Export Options</div>
+                    <label class="form-label">
+                        <input type="checkbox" id="export-minify"> Minify output (smaller file size)
+                    </label>
+                    <label class="form-label">
+                        <input type="checkbox" id="export-comments" checked> Include comments in output
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Block Editor Modal -->
+    <div id="block-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="block-modal-title">Add Block</h3>
+                <button class="modal-close" onclick="closeModal('block-modal')">×</button>
+            </div>
+
+            <label class="form-label">Block Name</label>
+            <input type="text" class="form-control" id="block-name" placeholder="e.g., 'Chapter 1' or 'Secret Cave'">
+
+            <label class="form-label">Block ID (unique identifier)</label>
+            <input type="text" class="form-control" id="block-id" placeholder="e.g., 'chapter1' (auto-generated)">
+
+            <label class="form-label">Type</label>
+            <select class="form-control" id="block-type">
+                <option value="start">Start Block (always visible)</option>
+                <option value="locked">Locked Block (requires gate)</option>
+            </select>
+
+            <div id="block-gate-select" style="display:none">
+                <label class="form-label">Unlock Gate</label>
+                <select class="form-control" id="block-gate">
+                    <option value="">Select a gate...</option>
+                </select>
+            </div>
+
+            <label class="form-label">Story Content</label>
+            <textarea class="form-control" id="block-content" rows="5" placeholder="Tell your story here..."></textarea>
+
+            <label class="form-label">Add Image (optional)</label>
+            <input type="file" class="form-control" id="block-image" accept="image/*" onchange="previewBlockImage()">
+            <div id="block-image-preview"></div>
+
+            <div class="mt-3">
+                <button class="btn btn-primary" onclick="saveBlock()">Save Block</button>
+                <button class="btn btn-secondary" onclick="closeModal('block-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Puzzle Library Modal -->
+    <div id="puzzle-library-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Puzzle Library</h3>
+                <button class="modal-close" onclick="closeModal('puzzle-library-modal')">×</button>
+            </div>
+
+            <p>Select a puzzle type to add:</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem">
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('text-password')">
+                    <div style="font-size:2rem">🔐</div>
+                    <h4>Text Password</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Simple password entry</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('math')">
+                    <div style="font-size:2rem">🔢</div>
+                    <h4>Math Puzzle</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Mathematical equations</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('riddle')">
+                    <div style="font-size:2rem">🤔</div>
+                    <h4>Riddle</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Classic riddles</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('caesar')">
+                    <div style="font-size:2rem">🔤</div>
+                    <h4>Caesar Cipher</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Decode messages</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('geohash')">
+                    <div style="font-size:2rem">📍</div>
+                    <h4>GPS Location</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Location-based</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('qr-code')">
+                    <div style="font-size:2rem">📱</div>
+                    <h4>QR Code</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Scan QR codes</p>
+                </div>
+
+                <div class="card" style="cursor:pointer;text-align:center" onclick="selectPuzzleType('image')">
+                    <div style="font-size:2rem">🖼️</div>
+                    <h4>Image Clue</h4>
+                    <p style="font-size:.875rem;color:#6c757d">Visual puzzles</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Puzzle Config Modal -->
+    <div id="puzzle-config-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="puzzle-config-title">Configure Puzzle</h3>
+                <button class="modal-close" onclick="closeModal('puzzle-config-modal')">×</button>
+            </div>
+
+            <div id="puzzle-config-form">
+                <!-- Dynamically generated based on puzzle type -->
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-primary" onclick="savePuzzleConfig()">Save Puzzle</button>
+                <button class="btn btn-secondary" onclick="closeModal('puzzle-config-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gate Editor Modal -->
+    <div id="gate-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="gate-modal-title">Add Gate</h3>
+                <button class="modal-close" onclick="closeModal('gate-modal')">×</button>
+            </div>
+
+            <label class="form-label">Gate Name</label>
+            <input type="text" class="form-control" id="gate-name" placeholder="e.g., 'Gate 1' or 'Cave Entrance'">
+
+            <label class="form-label">Gate ID (unique identifier)</label>
+            <input type="text" class="form-control" id="gate-id" placeholder="e.g., 'gate1' (auto-generated)">
+
+            <label class="form-label">Required Puzzles</label>
+            <p class="text-muted" style="font-size:.875rem">Select which puzzle answers are needed to unlock this gate:</p>
+            <div id="gate-puzzles-list" style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+                <!-- Dynamically populated -->
+            </div>
+
+            <label class="form-label mt-3">Key Composition Method</label>
+            <select class="form-control" id="gate-composition">
+                <option value="concat">Concatenate (ABC)</option>
+                <option value="reverse">Reverse (CBA)</option>
+                <option value="sorted">Sorted Alphabetically</option>
+                <option value="joined">Joined with hyphen (A-B-C)</option>
+                <option value="custom">Custom (specify formula)</option>
+            </select>
+
+            <div id="gate-custom-formula" style="display:none;margin-top:.5rem">
+                <label class="form-label">Custom Formula</label>
+                <input type="text" class="form-control" id="gate-formula" placeholder="e.g., {0}{1}{2} or {2}-{0}-{1}">
+                <small class="text-muted">Use {0}, {1}, {2}... to reference puzzle answers in order selected above</small>
+            </div>
+
+            <label class="form-label mt-3">Test Password</label>
+            <input type="text" class="form-control" id="gate-test-password" placeholder="Test what the composed password would be">
+            <small class="text-muted">This helps you verify the key composition works correctly</small>
+
+            <div class="mt-3">
+                <button class="btn btn-primary" onclick="saveGate()">Save Gate</button>
+                <button class="btn btn-secondary" onclick="closeModal('gate-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const appState = {
+            blocks: [],
+            puzzles: [],
+            gates: [],
+            currentEditingBlock: null,
+            currentEditingPuzzle: null,
+            currentEditingGate: null,
+            selectedPuzzleType: null
+        };
+
+        // Initialize with a start block
+        function initializeApp() {
+            if (appState.blocks.length === 0) {
+                appState.blocks.push({
+                    id: 'start',
+                    name: 'Start',
+                    type: 'start',
+                    content: 'Welcome to the treasure hunt!',
+                    image: null,
+                    puzzles: []
+                });
+            }
+            updateStats();
+            renderBlocks();
+            renderPuzzles();
+            renderGates();
+        }
+
+        // Section Navigation
+        function showSection(sectionName) {
+            // Update nav
+            document.querySelectorAll('.section-nav li').forEach(li => li.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('section-' + sectionName).classList.add('active');
+
+            // Refresh if needed
+            if (sectionName === 'flow') {
+                renderFlowDiagram();
+            }
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Block Management
+        function addBlock() {
+            appState.currentEditingBlock = null;
+            document.getElementById('block-modal-title').textContent = 'Add Block';
+            document.getElementById('block-name').value = '';
+            document.getElementById('block-id').value = '';
+            document.getElementById('block-type').value = 'locked';
+            document.getElementById('block-content').value = '';
+            document.getElementById('block-image').value = '';
+            document.getElementById('block-image-preview').innerHTML = '';
+            updateBlockTypeUI();
+            openModal('block-modal');
+        }
+
+        function editBlock(blockId) {
+            const block = appState.blocks.find(b => b.id === blockId);
+            if (!block) return;
+
+            appState.currentEditingBlock = blockId;
+            document.getElementById('block-modal-title').textContent = 'Edit Block';
+            document.getElementById('block-name').value = block.name;
+            document.getElementById('block-id').value = block.id;
+            document.getElementById('block-type').value = block.type;
+            document.getElementById('block-content').value = block.content || '';
+
+            if (block.image) {
+                document.getElementById('block-image-preview').innerHTML =
+                    `<img src="${block.image}" class="image-preview">`;
+            }
+
+            updateBlockTypeUI();
+            openModal('block-modal');
+        }
+
+        function deleteBlock(blockId) {
+            if (blockId === 'start') {
+                alert('Cannot delete the start block');
+                return;
+            }
+            if (confirm('Delete this block? Puzzles will be moved to orphaned list.')) {
+                appState.blocks = appState.blocks.filter(b => b.id !== blockId);
+                updateStats();
+                renderBlocks();
+            }
+        }
+
+        function saveBlock() {
+            const name = document.getElementById('block-name').value.trim();
+            let id = document.getElementById('block-id').value.trim();
+            const type = document.getElementById('block-type').value;
+            const content = document.getElementById('block-content').value;
+            const gateId = document.getElementById('block-gate').value;
+
+            if (!name) {
+                alert('Please enter a block name');
+                return;
+            }
+
+            // Auto-generate ID if empty
+            if (!id) {
+                id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            }
+
+            // Validate unique ID
+            if (appState.currentEditingBlock !== id && appState.blocks.some(b => b.id === id)) {
+                alert('Block ID must be unique');
+                return;
+            }
+
+            const imagePreview = document.getElementById('block-image-preview');
+            const image = imagePreview.querySelector('img')?.src || null;
+
+            const block = {
+                id,
+                name,
+                type,
+                content,
+                image,
+                gateId: type === 'locked' ? gateId : null,
+                puzzles: []
+            };
+
+            if (appState.currentEditingBlock) {
+                // Editing
+                const index = appState.blocks.findIndex(b => b.id === appState.currentEditingBlock);
+                // Preserve puzzles
+                block.puzzles = appState.blocks[index].puzzles;
+                appState.blocks[index] = block;
+            } else {
+                // Adding
+                appState.blocks.push(block);
+            }
+
+            updateStats();
+            renderBlocks();
+            closeModal('block-modal');
+        }
+
+        function previewBlockImage() {
+            const file = document.getElementById('block-image').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('block-image-preview').innerHTML =
+                        `<img src="${e.target.result}" class="image-preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateBlockTypeUI() {
+            const type = document.getElementById('block-type').value;
+            const gateSelect = document.getElementById('block-gate-select');
+
+            if (type === 'locked') {
+                gateSelect.style.display = 'block';
+                updateGateSelect();
+            } else {
+                gateSelect.style.display = 'none';
+            }
+        }
+
+        document.getElementById('block-type')?.addEventListener('change', updateBlockTypeUI);
+
+        function updateGateSelect() {
+            const select = document.getElementById('block-gate');
+            select.innerHTML = '<option value="">Select a gate...</option>';
+            appState.gates.forEach(gate => {
+                select.innerHTML += `<option value="${gate.id}">${gate.name}</option>`;
+            });
+        }
+
+        // Puzzle Management
+        function showPuzzleLibrary() {
+            openModal('puzzle-library-modal');
+        }
+
+        function selectPuzzleType(type) {
+            appState.selectedPuzzleType = type;
+            closeModal('puzzle-library-modal');
+            showPuzzleConfig(type);
+        }
+
+        function showPuzzleConfig(type) {
+            appState.currentEditingPuzzle = null;
+            document.getElementById('puzzle-config-title').textContent = `Configure ${getPuzzleTypeName(type)}`;
+
+            const form = document.getElementById('puzzle-config-form');
+            form.innerHTML = getPuzzleConfigForm(type);
+
+            openModal('puzzle-config-modal');
+        }
+
+        function getPuzzleTypeName(type) {
+            const names = {
+                'text-password': 'Text Password',
+                'math': 'Math Puzzle',
+                'riddle': 'Riddle',
+                'caesar': 'Caesar Cipher',
+                'geohash': 'GPS Location',
+                'qr-code': 'QR Code',
+                'image': 'Image Clue'
+            };
+            return names[type] || type;
+        }
+
+        function getPuzzleConfigForm(type) {
+            // Common fields
+            let html = `
+                <label class="form-label">Puzzle Name</label>
+                <input type="text" class="form-control" id="puzzle-name" placeholder="e.g., 'First Clue'">
+
+                <label class="form-label">Puzzle ID</label>
+                <input type="text" class="form-control" id="puzzle-id" placeholder="Auto-generated">
+
+                <label class="form-label">Place in Block</label>
+                <select class="form-control" id="puzzle-block">
+                    ${appState.blocks.map(b => `<option value="${b.id}">${b.name}</option>`).join('')}
+                </select>
+            `;
+
+            // Type-specific fields
+            switch(type) {
+                case 'text-password':
+                    html += `
+                        <label class="form-label">Question/Clue</label>
+                        <textarea class="form-control" id="puzzle-question" rows="3"></textarea>
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Expected Answer (for testing)</label>
+                        <input type="text" class="form-control" id="puzzle-answer" placeholder="Not stored in output">
+                    `;
+                    break;
+
+                case 'math':
+                    html += `
+                        <label class="form-label">Equation</label>
+                        <input type="text" class="form-control" id="puzzle-equation" placeholder="e.g., 6 × 7 = ?">
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Expected Answer</label>
+                        <input type="text" class="form-control" id="puzzle-answer">
+                    `;
+                    break;
+
+                case 'riddle':
+                    html += `
+                        <label class="form-label">Riddle Text</label>
+                        <textarea class="form-control" id="puzzle-riddle" rows="4"></textarea>
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Expected Answer</label>
+                        <input type="text" class="form-control" id="puzzle-answer">
+                    `;
+                    break;
+
+                case 'caesar':
+                    html += `
+                        <label class="form-label">Message to Encode</label>
+                        <input type="text" class="form-control" id="puzzle-message">
+
+                        <label class="form-label">Shift Amount</label>
+                        <input type="number" class="form-control" id="puzzle-shift" value="3" min="1" max="25">
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+                    `;
+                    break;
+
+                case 'geohash':
+                    html += `
+                        <label class="form-label">Location Clue</label>
+                        <textarea class="form-control" id="puzzle-clue" rows="3" placeholder="Describe where to go..."></textarea>
+
+                        <label class="form-label">Precision Level (4-9)</label>
+                        <select class="form-control" id="puzzle-precision">
+                            <option value="5">5 - ~2.4km (city level)</option>
+                            <option value="6">6 - ~610m (neighborhood)</option>
+                            <option value="7" selected>7 - ~150m (hiking recommended)</option>
+                            <option value="8">8 - ~38m (precise)</option>
+                            <option value="9">9 - ~5m (very precise)</option>
+                        </select>
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Expected Geohash (for testing)</label>
+                        <input type="text" class="form-control" id="puzzle-answer">
+                    `;
+                    break;
+
+                case 'qr-code':
+                    html += `
+                        <label class="form-label">Clue Text</label>
+                        <textarea class="form-control" id="puzzle-clue" rows="3" placeholder="Where to find the QR code..."></textarea>
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Show Test QR Code</label>
+                        <select class="form-control" id="puzzle-show-example">
+                            <option value="false">No</option>
+                            <option value="true">Yes (for testing)</option>
+                        </select>
+
+                        <label class="form-label">Expected Answer</label>
+                        <input type="text" class="form-control" id="puzzle-answer">
+                    `;
+                    break;
+
+                case 'image':
+                    html += `
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="puzzle-description" rows="2"></textarea>
+
+                        <label class="form-label">Image File</label>
+                        <input type="file" class="form-control" id="puzzle-image-file" accept="image/*" onchange="previewPuzzleImage()">
+                        <div id="puzzle-image-preview"></div>
+
+                        <label class="form-label">Hint (optional)</label>
+                        <input type="text" class="form-control" id="puzzle-hint">
+
+                        <label class="form-label">Expected Answer</label>
+                        <input type="text" class="form-control" id="puzzle-answer">
+                    `;
+                    break;
+            }
+
+            return html;
+        }
+
+        function previewPuzzleImage() {
+            const file = document.getElementById('puzzle-image-file').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('puzzle-image-preview').innerHTML =
+                        `<img src="${e.target.result}" class="image-preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function savePuzzleConfig() {
+            const type = appState.selectedPuzzleType;
+            const name = document.getElementById('puzzle-name').value.trim();
+            let id = document.getElementById('puzzle-id').value.trim();
+            const blockId = document.getElementById('puzzle-block').value;
+
+            if (!name) {
+                alert('Please enter a puzzle name');
+                return;
+            }
+
+            if (!id) {
+                id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                // Ensure unique
+                let counter = 1;
+                let testId = id;
+                while (appState.puzzles.some(p => p.id === testId)) {
+                    testId = `${id}-${counter}`;
+                    counter++;
+                }
+                id = testId;
+            }
+
+            // Gather config based on type
+            const config = { type, name, id, blockId };
+
+            switch(type) {
+                case 'text-password':
+                    config.question = document.getElementById('puzzle-question').value;
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+
+                case 'math':
+                    config.equation = document.getElementById('puzzle-equation').value;
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+
+                case 'riddle':
+                    config.riddle = document.getElementById('puzzle-riddle').value;
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+
+                case 'caesar':
+                    config.message = document.getElementById('puzzle-message').value;
+                    config.shift = parseInt(document.getElementById('puzzle-shift').value);
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    // Calculate encoded message
+                    config.encodedMessage = caesarEncode(config.message, config.shift);
+                    config.expectedAnswer = config.message;
+                    break;
+
+                case 'geohash':
+                    config.clue = document.getElementById('puzzle-clue').value;
+                    config.precision = parseInt(document.getElementById('puzzle-precision').value);
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+
+                case 'qr-code':
+                    config.clue = document.getElementById('puzzle-clue').value;
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.showExample = document.getElementById('puzzle-show-example').value === 'true';
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+
+                case 'image':
+                    config.description = document.getElementById('puzzle-description').value;
+                    const imgPreview = document.getElementById('puzzle-image-preview');
+                    config.imageData = imgPreview.querySelector('img')?.src || null;
+                    config.hint = document.getElementById('puzzle-hint').value;
+                    config.expectedAnswer = document.getElementById('puzzle-answer').value;
+                    break;
+            }
+
+            appState.puzzles.push(config);
+
+            // Add to block
+            const block = appState.blocks.find(b => b.id === blockId);
+            if (block) {
+                block.puzzles.push(id);
+            }
+
+            updateStats();
+            renderPuzzles();
+            renderBlocks();
+            closeModal('puzzle-config-modal');
+        }
+
+        function caesarEncode(text, shift) {
+            return text.split('').map(char => {
+                if (char.match(/[a-z]/i)) {
+                    const code = char.charCodeAt(0);
+                    const isUpperCase = code >= 65 && code <= 90;
+                    const base = isUpperCase ? 65 : 97;
+                    return String.fromCharCode(((code - base + shift) % 26) + base);
+                }
+                return char;
+            }).join('');
+        }
+
+        function deletePuzzle(puzzleId) {
+            if (confirm('Delete this puzzle?')) {
+                appState.puzzles = appState.puzzles.filter(p => p.id !== puzzleId);
+                // Remove from blocks
+                appState.blocks.forEach(block => {
+                    block.puzzles = block.puzzles.filter(id => id !== puzzleId);
+                });
+                updateStats();
+                renderPuzzles();
+                renderBlocks();
+            }
+        }
+
+        // Gate Management
+        function addGate() {
+            appState.currentEditingGate = null;
+            document.getElementById('gate-modal-title').textContent = 'Add Gate';
+            document.getElementById('gate-name').value = '';
+            document.getElementById('gate-id').value = '';
+            document.getElementById('gate-composition').value = 'concat';
+            updateGatePuzzlesList();
+            openModal('gate-modal');
+        }
+
+        function editGate(gateId) {
+            const gate = appState.gates.find(g => g.id === gateId);
+            if (!gate) return;
+
+            appState.currentEditingGate = gateId;
+            document.getElementById('gate-modal-title').textContent = 'Edit Gate';
+            document.getElementById('gate-name').value = gate.name;
+            document.getElementById('gate-id').value = gate.id;
+            document.getElementById('gate-composition').value = gate.composition;
+            updateGatePuzzlesList(gate.puzzleIds);
+            openModal('gate-modal');
+        }
+
+        function deleteGate(gateId) {
+            if (confirm('Delete this gate? Blocks using this gate will become inaccessible.')) {
+                appState.gates = appState.gates.filter(g => g.id !== gateId);
+                updateStats();
+                renderGates();
+            }
+        }
+
+        function updateGatePuzzlesList(selectedPuzzles = []) {
+            const container = document.getElementById('gate-puzzles-list');
+
+            if (appState.puzzles.length === 0) {
+                container.innerHTML = '<p class="text-muted" style="padding:1rem">No puzzles available. Add puzzles first.</p>';
+                return;
+            }
+
+            container.innerHTML = appState.puzzles.map(puzzle => {
+                const checked = selectedPuzzles.includes(puzzle.id) ? 'checked' : '';
+                return `
+                    <label style="display:block;padding:.5rem;cursor:pointer;border-radius:.375rem">
+                        <input type="checkbox" value="${puzzle.id}" ${checked} style="margin-right:.5rem">
+                        <strong>${puzzle.name}</strong>
+                        <span class="badge bg-secondary">${getPuzzleTypeName(puzzle.type)}</span>
+                        ${puzzle.expectedAnswer ? `<small class="text-muted">(answer: ${puzzle.expectedAnswer})</small>` : ''}
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function saveGate() {
+            const name = document.getElementById('gate-name').value.trim();
+            let id = document.getElementById('gate-id').value.trim();
+            const composition = document.getElementById('gate-composition').value;
+
+            if (!name) {
+                alert('Please enter a gate name');
+                return;
+            }
+
+            if (!id) {
+                id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            }
+
+            // Validate unique ID
+            if (appState.currentEditingGate !== id && appState.gates.some(g => g.id === id)) {
+                alert('Gate ID must be unique');
+                return;
+            }
+
+            // Get selected puzzles
+            const checkboxes = document.querySelectorAll('#gate-puzzles-list input[type="checkbox"]:checked');
+            const puzzleIds = Array.from(checkboxes).map(cb => cb.value);
+
+            if (puzzleIds.length === 0) {
+                alert('Please select at least one puzzle');
+                return;
+            }
+
+            const gate = {
+                id,
+                name,
+                composition,
+                puzzleIds,
+                formula: composition === 'custom' ? document.getElementById('gate-formula').value : null
+            };
+
+            if (appState.currentEditingGate) {
+                const index = appState.gates.findIndex(g => g.id === appState.currentEditingGate);
+                appState.gates[index] = gate;
+            } else {
+                appState.gates.push(gate);
+            }
+
+            updateStats();
+            renderGates();
+            closeModal('gate-modal');
+        }
+
+        document.getElementById('gate-composition')?.addEventListener('change', function() {
+            const customFormula = document.getElementById('gate-custom-formula');
+            customFormula.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+
+        // Rendering Functions
+        function renderBlocks() {
+            const container = document.getElementById('blocks-container');
+
+            container.innerHTML = appState.blocks.map(block => {
+                const puzzleCount = block.puzzles.length;
+                const typeLabel = block.type === 'start' ?
+                    '<span class="badge bg-success">Start</span>' :
+                    '<span class="badge bg-warning">Locked</span>';
+
+                const gateName = block.gateId ?
+                    appState.gates.find(g => g.id === block.gateId)?.name || 'Unknown Gate' :
+                    'N/A';
+
+                return `
+                    <div class="block-item ${block.type}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>${block.name}</strong> ${typeLabel}
+                                ${block.gateId ? `<small class="text-muted">→ Gate: ${gateName}</small>` : ''}
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-secondary" onclick="editBlock('${block.id}')">Edit</button>
+                                ${block.id !== 'start' ? `<button class="btn btn-sm btn-danger" onclick="deleteBlock('${block.id}')">Delete</button>` : ''}
+                            </div>
+                        </div>
+                        <div style="font-size:.875rem;color:#6c757d">
+                            ${block.content ? block.content.substring(0, 100) + (block.content.length > 100 ? '...' : '') : '<em>No content</em>'}
+                        </div>
+                        <div style="margin-top:.5rem;font-size:.875rem">
+                            <strong>${puzzleCount}</strong> puzzle${puzzleCount !== 1 ? 's' : ''}
+                            ${block.image ? '📷 Image attached' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPuzzles() {
+            const container = document.getElementById('puzzles-container');
+
+            if (appState.puzzles.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No puzzles yet. Click "Add Puzzle" to create one.</div>';
+                return;
+            }
+
+            container.innerHTML = appState.puzzles.map(puzzle => {
+                const block = appState.blocks.find(b => b.id === puzzle.blockId);
+                const blockName = block ? block.name : 'Unknown';
+
+                return `
+                    <div class="puzzle-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${puzzle.name}</strong>
+                                <span class="badge bg-primary">${getPuzzleTypeName(puzzle.type)}</span>
+                                <div style="font-size:.75rem;color:#6c757d;margin-top:.25rem">
+                                    In block: ${blockName}
+                                    ${puzzle.expectedAnswer ? ` • Answer: ${puzzle.expectedAnswer}` : ''}
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-danger" onclick="deletePuzzle('${puzzle.id}')">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderGates() {
+            const container = document.getElementById('gates-container');
+
+            if (appState.gates.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No gates yet. Click "Add Gate" to create one.</div>';
+                return;
+            }
+
+            container.innerHTML = appState.gates.map(gate => {
+                const puzzleNames = gate.puzzleIds.map(id => {
+                    const puzzle = appState.puzzles.find(p => p.id === id);
+                    return puzzle ? puzzle.name : 'Unknown';
+                }).join(', ');
+
+                const blocksUsingGate = appState.blocks.filter(b => b.gateId === gate.id);
+                const unlocks = blocksUsingGate.length > 0 ?
+                    blocksUsingGate.map(b => b.name).join(', ') :
+                    'No blocks';
+
+                return `
+                    <div class="gate-item">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>${gate.name}</strong>
+                                <span class="badge bg-secondary">${gate.composition}</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-secondary" onclick="editGate('${gate.id}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteGate('${gate.id}')">Delete</button>
+                            </div>
+                        </div>
+                        <div style="font-size:.875rem">
+                            <strong>Required puzzles:</strong> ${puzzleNames || 'None'}
+                        </div>
+                        <div style="font-size:.875rem;color:#6c757d">
+                            <strong>Unlocks:</strong> ${unlocks}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderFlowDiagram() {
+            const container = document.getElementById('flow-diagram');
+
+            // Simple text-based flow for now
+            let html = '<div style="font-family:monospace;font-size:.875rem;line-height:2">';
+
+            // Start block
+            html += '<div><strong>START: ' + appState.blocks[0].name + '</strong></div>';
+
+            // Show puzzles in start block
+            const startPuzzles = appState.puzzles.filter(p => p.blockId === 'start');
+            if (startPuzzles.length > 0) {
+                html += '<div style="margin-left:2rem">🧩 Puzzles: ' + startPuzzles.map(p => p.name).join(', ') + '</div>';
+            }
+
+            // Show gates and what they unlock
+            appState.gates.forEach(gate => {
+                html += '<div style="margin-top:1rem">↓</div>';
+                html += '<div><strong>🔐 GATE: ' + gate.name + '</strong></div>';
+                html += '<div style="margin-left:2rem">Requires: ' + gate.puzzleIds.length + ' puzzle(s)</div>';
+                html += '<div style="margin-left:2rem">Method: ' + gate.composition + '</div>';
+
+                const unlockedBlocks = appState.blocks.filter(b => b.gateId === gate.id);
+                if (unlockedBlocks.length > 0) {
+                    html += '<div style="margin-top:.5rem">↓</div>';
+                    unlockedBlocks.forEach(block => {
+                        html += '<div><strong>📦 ' + block.name + '</strong></div>';
+                        const blockPuzzles = appState.puzzles.filter(p => p.blockId === block.id);
+                        if (blockPuzzles.length > 0) {
+                            html += '<div style="margin-left:2rem">🧩 Puzzles: ' + blockPuzzles.map(p => p.name).join(', ') + '</div>';
+                        }
+                    });
+                }
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-blocks').textContent = appState.blocks.length;
+            document.getElementById('stat-puzzles').textContent = appState.puzzles.length;
+            document.getElementById('stat-gates').textContent = appState.gates.length;
+        }
+
+        // Save/Load Project
+        function saveProject() {
+            const projectData = JSON.stringify(appState, null, 2);
+            const blob = new Blob([projectData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (document.getElementById('hunt-title').value || 'treasure-hunt') + '-project.json';
+            a.click();
+        }
+
+        function loadProject() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        Object.assign(appState, data);
+                        updateStats();
+                        renderBlocks();
+                        renderPuzzles();
+                        renderGates();
+                        alert('Project loaded successfully!');
+                    } catch (err) {
+                        alert('Error loading project: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Export/Generate Hunt
+        async function generateHunt() {
+            const statusEl = document.getElementById('export-status');
+            statusEl.innerHTML = '<div class="alert alert-info">⏳ Generating treasure hunt...</div>';
+
+            try {
+                // Validate
+                if (appState.blocks.length === 0) {
+                    throw new Error('Add at least one block');
+                }
+
+                if (appState.gates.length === 0) {
+                    throw new Error('Add at least one gate to unlock content');
+                }
+
+                const title = document.getElementById('hunt-title').value || 'Treasure Hunt';
+
+                // Load template
+                statusEl.innerHTML = '<div class="alert alert-info">⏳ Loading template...</div>';
+                const templateResponse = await fetch('../framework/treasure-hunt-template.html');
+                if (!templateResponse.ok) {
+                    throw new Error('Failed to load template');
+                }
+                let templateHTML = await templateResponse.text();
+
+                // Generate home content (start block + puzzles)
+                statusEl.innerHTML = '<div class="alert alert-info">⏳ Generating puzzles...</div>';
+                const homeContent = await generateBlockHTML('start');
+
+                // Generate encrypted blobs for locked blocks
+                statusEl.innerHTML = '<div class="alert alert-info">⏳ Encrypting content...</div>';
+                const blobs = {};
+
+                for (const block of appState.blocks) {
+                    if (block.type === 'locked' && block.gateId) {
+                        const gate = appState.gates.find(g => g.id === block.gateId);
+                        if (!gate) continue;
+
+                        // Generate content for this block
+                        const blockHTML = await generateBlockHTML(block.id);
+
+                        // Compose password from gate configuration
+                        const password = composePasswordFromGate(gate);
+
+                        // Compress and encrypt
+                        const compressed = compress(blockHTML);
+                        const encrypted = await encrypt(compressed, password);
+
+                        blobs[block.id] = encrypted;
+                    }
+                }
+
+                // Build configuration
+                const config = {
+                    huntTitle: title,
+                    homeContent: homeContent,
+                    blobs: blobs
+                };
+
+                // Insert into template
+                statusEl.innerHTML = '<div class="alert alert-info">⏳ Finalizing...</div>';
+                const configStr = JSON.stringify(config, null, 12);
+                templateHTML = templateHTML.replace(
+                    /\/\* TREASURE_HUNT_CONFIG_START \*\/[\s\S]*?\/\* TREASURE_HUNT_CONFIG_END \*\//,
+                    `/* TREASURE_HUNT_CONFIG_START */\n            TreasureHunt.configure(${configStr});\n            /* TREASURE_HUNT_CONFIG_END */`
+                );
+
+                // Download
+                const blob = new Blob([templateHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = title.toLowerCase().replace(/\s+/g, '-') + '.html';
+                a.click();
+
+                statusEl.innerHTML = '<div class="alert alert-success">✅ Treasure hunt generated successfully! File downloaded.</div>';
+
+            } catch (error) {
+                statusEl.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+                console.error('Generation error:', error);
+            }
+        }
+
+        async function generateBlockHTML(blockId) {
+            const block = appState.blocks.find(b => b.id === blockId);
+            if (!block) return '';
+
+            let html = '';
+
+            // Block header and content
+            if (blockId !== 'start') {
+                html += `<h3>${escapeHtml(block.name)}</h3>\n`;
+            }
+
+            if (block.content) {
+                html += `<div class="card"><div class="card-body">\n`;
+                html += `<p>${escapeHtml(block.content).replace(/\n/g, '<br>')}</p>\n`;
+                if (block.image) {
+                    html += `<img src="${block.image}" style="max-width:100%;border-radius:8px;margin:1rem 0">\n`;
+                }
+                html += `</div></div>\n`;
+            }
+
+            // Add puzzles in this block
+            const blockPuzzles = appState.puzzles.filter(p => p.blockId === blockId);
+
+            for (const puzzle of blockPuzzles) {
+                html += generatePuzzleHTML(puzzle);
+            }
+
+            return html;
+        }
+
+        function generatePuzzleHTML(puzzle) {
+            let html = '';
+            // Create unique ID for each puzzle type to avoid conflicts
+            const uniqueId = `answer-${puzzle.type}-${puzzle.id}`;
+
+            switch (puzzle.type) {
+                case 'text-password':
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>🔐 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>${escapeHtml(puzzle.question)}</p>
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <input type="text" class="form-control mb-2" id="${uniqueId}" placeholder="Enter your answer">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${uniqueId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'math':
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>🔢 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>Solve the equation:</p>
+                                <h4 class="text-center my-3">${escapeHtml(puzzle.equation)}</h4>
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <input type="number" class="form-control mb-2" id="${uniqueId}" placeholder="Enter the answer">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${uniqueId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'riddle':
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>🤔 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p class="fst-italic">"${escapeHtml(puzzle.riddle)}"</p>
+                                ${puzzle.hint ? `<p class="text-muted mt-3"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <input type="text" class="form-control mb-2" id="${uniqueId}" placeholder="What am I?">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${uniqueId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'caesar':
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>🔤 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>Decode this message to find the password:</p>
+                                <div class="alert alert-secondary text-center">
+                                    <code style="font-size:1.2em;">${escapeHtml(puzzle.encodedMessage || '')}</code>
+                                </div>
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <label class="form-label">Decoded message:</label>
+                                    <input type="text" class="form-control mb-2" id="${uniqueId}" placeholder="Enter the decoded message">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${uniqueId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'geohash':
+                    // Generate unique function names for this puzzle
+                    const getGeohashFn = `getGeohash_${puzzle.id.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                    const encodeGeohashFn = `encodeGeohash_${puzzle.id.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                    const answerId = `answer-${puzzle.id}`;
+
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>📍 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>${escapeHtml(puzzle.clue)}</p>
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <p class="text-muted"><small>Precision: Level ${puzzle.precision}</small></p>
+                                <div class="mt-3">
+                                    <button class="btn btn-secondary mb-2" onclick="${getGeohashFn}()">📡 Get Current Geohash</button>
+                                    <input type="text" class="form-control mb-2" id="${answerId}" placeholder="Geohash will appear here" readonly>
+                                    <p class="text-muted"><small>Or enter manually if you know the geohash</small></p>
+                                </div>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                        (function() {
+                            window.${getGeohashFn} = function() {
+                                if (!navigator.geolocation) {
+                                    alert('Geolocation not supported');
+                                    return;
+                                }
+                                navigator.geolocation.getCurrentPosition(function(pos) {
+                                    const hash = ${encodeGeohashFn}(pos.coords.latitude, pos.coords.longitude, ${puzzle.precision});
+                                    document.getElementById('${answerId}').value = hash;
+                                    if (typeof TreasureHunt !== 'undefined') {
+                                        TreasureHunt.addAnswer(hash);
+                                    }
+                                }, function(err) {
+                                    alert('Error getting location: ' + err.message);
+                                });
+                            };
+
+                            window.${encodeGeohashFn} = function(lat, lon, precision) {
+                                const base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
+                                let idx = 0, bit = 0, evenBit = true, geohash = "";
+                                let latMin = -90, latMax = 90, lonMin = -180, lonMax = 180;
+                                while (geohash.length < precision) {
+                                    if (evenBit) {
+                                        const lonMid = (lonMin + lonMax) / 2;
+                                        if (lon > lonMid) { idx = (idx << 1) + 1; lonMin = lonMid; }
+                                        else { idx = (idx << 1) + 0; lonMax = lonMid; }
+                                    } else {
+                                        const latMid = (latMin + latMax) / 2;
+                                        if (lat > latMid) { idx = (idx << 1) + 1; latMin = latMid; }
+                                        else { idx = (idx << 1) + 0; latMax = latMid; }
+                                    }
+                                    evenBit = !evenBit;
+                                    if (++bit == 5) { geohash += base32[idx]; bit = 0; idx = 0; }
+                                }
+                                return geohash;
+                            };
+                        })();
+                        <\/script>
+                    `;
+                    break;
+
+                case 'qr-code':
+                    const qrAnswerId = `answer-qr-${puzzle.id}`;
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>📱 ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>${escapeHtml(puzzle.clue)}</p>
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <label class="form-label">Enter the code from the QR:</label>
+                                    <input type="text" class="form-control mb-2" id="${qrAnswerId}" placeholder="Enter code">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${qrAnswerId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'image':
+                    const imageAnswerId = `answer-image-${puzzle.id}`;
+                    const imageHtml = puzzle.imageData && puzzle.imageData !== '' ?
+                        `<div class="text-center my-3"><img src="${puzzle.imageData}" style="max-width:100%;max-height:400px;border-radius:8px" alt="Puzzle image"></div>` :
+                        '<p class="text-muted"><small>No image provided</small></p>';
+
+                    html = `
+                        <div class="card mt-3">
+                            <div class="card-header"><h5>🖼️ ${escapeHtml(puzzle.name)}</h5></div>
+                            <div class="card-body">
+                                <p>${escapeHtml(puzzle.description)}</p>
+                                ${imageHtml}
+                                ${puzzle.hint ? `<p class="text-muted"><small><em>Hint: ${escapeHtml(puzzle.hint)}</em></small></p>` : ''}
+                                <div class="mt-3">
+                                    <input type="text" class="form-control mb-2" id="${imageAnswerId}" placeholder="Enter the answer from the image">
+                                    <button class="btn btn-primary" onclick="TreasureHunt.addAnswer(document.getElementById('${imageAnswerId}').value)">
+                                        Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            return html;
+        }
+
+        function composePasswordFromGate(gate) {
+            // Get puzzle answers in order
+            const answers = gate.puzzleIds.map(puzzleId => {
+                const puzzle = appState.puzzles.find(p => p.id === puzzleId);
+                return puzzle ? puzzle.expectedAnswer : '';
+            });
+
+            // Apply composition method
+            switch (gate.composition) {
+                case 'concat':
+                    return answers.join('');
+                case 'reverse':
+                    return answers.reverse().join('');
+                case 'sorted':
+                    return answers.sort().join('');
+                case 'joined':
+                    return answers.join('-');
+                case 'custom':
+                    // Apply custom formula
+                    let result = gate.formula || '';
+                    answers.forEach((answer, index) => {
+                        result = result.replace(new RegExp(`\\{${index}\\}`, 'g'), answer);
+                    });
+                    return result;
+                default:
+                    return answers.join('');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Crypto functions (matching framework)
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function deriveKey(password) {
+            const passwordHash = await sha256(password);
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                new TextEncoder().encode(passwordHash),
+                'PBKDF2',
+                false,
+                ['deriveKey']
+            );
+
+            return await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: new TextEncoder().encode('treasure-hunt-salt-v1'),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encrypt(text, password) {
+            const key = await deriveKey(password);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encoded = new TextEncoder().encode(text);
+
+            const ciphertext = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encoded
+            );
+
+            const result = new Uint8Array(iv.length + ciphertext.byteLength);
+            result.set(iv);
+            result.set(new Uint8Array(ciphertext), iv.length);
+
+            return btoa(String.fromCharCode.apply(null, result));
+        }
+
+        function compress(data) {
+            return btoa(unescape(encodeURIComponent(data)));
+        }
+
+        // Initialize
+        initializeApp();
+    </script>
+</body>
+</html>
