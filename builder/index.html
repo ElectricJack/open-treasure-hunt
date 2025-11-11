@@ -601,7 +601,11 @@
                         <label class="form-label">Hint (optional)</label>
                         <input type="text" class="form-control" id="puzzle-hint" value="${existing?.hint || ''}">
                         <label class="form-label">Expected Geohash</label>
-                        <input type="text" class="form-control" id="puzzle-answer" value="${existing?.expectedAnswer || ''}">
+                        <div class="d-flex gap-2 mb-2">
+                            <input type="text" class="form-control" id="puzzle-answer" value="${existing?.expectedAnswer || ''}" placeholder="e.g., 9q8yy9m">
+                            <button type="button" class="btn btn-success btn-sm" onclick="captureCurrentLocation()">📍 Use My Location</button>
+                        </div>
+                        <div id="location-status" style="font-size:0.875rem;color:#6c757d"></div>
                     `;
                     break;
                 case 'qr-code':
@@ -618,8 +622,18 @@
                     html += `
                         <label class="form-label">Description</label>
                         <textarea class="form-control" id="puzzle-description" rows="2">${existing?.description || ''}</textarea>
-                        <label class="form-label">Image File</label>
-                        <input type="file" class="form-control" id="puzzle-image-file" accept="image/*" onchange="previewPuzzleImage()">
+                        <label class="form-label">Image</label>
+                        <div class="d-flex gap-2 mb-2">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('puzzle-image-file').click()">📁 Upload File</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="capturePhoto()">📷 Take Photo</button>
+                        </div>
+                        <input type="file" class="form-control" id="puzzle-image-file" accept="image/*" onchange="previewPuzzleImage()" style="display:none">
+                        <video id="camera-preview" style="display:none;max-width:100%;border-radius:8px;margin-bottom:10px" autoplay playsinline></video>
+                        <div style="display:none;margin-bottom:10px" id="camera-controls">
+                            <button type="button" class="btn btn-success btn-sm" onclick="takePictureFromCamera()">📸 Capture</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="stopCamera()">Cancel</button>
+                        </div>
+                        <canvas id="photo-canvas" style="display:none"></canvas>
                         <div id="puzzle-image-preview">${existing?.imageData ? `<img src="${existing.imageData}" class="image-preview">` : ''}</div>
                         <label class="form-label">Hint (optional)</label>
                         <input type="text" class="form-control" id="puzzle-hint" value="${existing?.hint || ''}">
@@ -642,6 +656,138 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Camera capture for image puzzles
+        let currentStream = null;
+
+        async function capturePhoto() {
+            try {
+                const video = document.getElementById('camera-preview');
+                const controls = document.getElementById('camera-controls');
+
+                // Request camera access
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' } // Use back camera on mobile
+                });
+
+                video.srcObject = currentStream;
+                video.style.display = 'block';
+                controls.style.display = 'block';
+            } catch (error) {
+                alert('Could not access camera: ' + error.message);
+                console.error('Camera error:', error);
+            }
+        }
+
+        function takePictureFromCamera() {
+            const video = document.getElementById('camera-preview');
+            const canvas = document.getElementById('photo-canvas');
+            const preview = document.getElementById('puzzle-image-preview');
+
+            // Set canvas size to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw video frame to canvas
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+
+            // Convert to data URL
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+            // Display preview
+            preview.innerHTML = `<img src="${dataUrl}" class="image-preview">`;
+
+            // Stop camera
+            stopCamera();
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+
+            const video = document.getElementById('camera-preview');
+            const controls = document.getElementById('camera-controls');
+
+            video.style.display = 'none';
+            controls.style.display = 'none';
+            video.srcObject = null;
+        }
+
+        // GPS location capture for geohash puzzles
+        function captureCurrentLocation() {
+            const statusEl = document.getElementById('location-status');
+            const answerInput = document.getElementById('puzzle-answer');
+            const precision = parseInt(document.getElementById('puzzle-precision').value);
+
+            if (!navigator.geolocation) {
+                statusEl.innerHTML = '❌ Geolocation not supported by your browser';
+                statusEl.style.color = '#dc3545';
+                return;
+            }
+
+            statusEl.innerHTML = '📍 Getting your location...';
+            statusEl.style.color = '#0d6efd';
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const geohash = encodeGeohashBuilder(lat, lon, precision);
+
+                    answerInput.value = geohash;
+
+                    statusEl.innerHTML = `✅ Location captured: ${lat.toFixed(6)}, ${lon.toFixed(6)} → ${geohash}`;
+                    statusEl.style.color = '#198754';
+                },
+                function(error) {
+                    statusEl.innerHTML = '❌ Error: ' + error.message;
+                    statusEl.style.color = '#dc3545';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function encodeGeohashBuilder(lat, lon, precision) {
+            const base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
+            let idx = 0, bit = 0, evenBit = true, geohash = "";
+            let latMin = -90, latMax = 90, lonMin = -180, lonMax = 180;
+
+            while (geohash.length < precision) {
+                if (evenBit) {
+                    const lonMid = (lonMin + lonMax) / 2;
+                    if (lon > lonMid) {
+                        idx = (idx << 1) + 1;
+                        lonMin = lonMid;
+                    } else {
+                        idx = (idx << 1) + 0;
+                        lonMax = lonMid;
+                    }
+                } else {
+                    const latMid = (latMin + latMax) / 2;
+                    if (lat > latMid) {
+                        idx = (idx << 1) + 1;
+                        latMin = latMid;
+                    } else {
+                        idx = (idx << 1) + 0;
+                        latMax = latMid;
+                    }
+                }
+                evenBit = !evenBit;
+                if (++bit == 5) {
+                    geohash += base32[idx];
+                    bit = 0;
+                    idx = 0;
+                }
+            }
+            return geohash;
         }
 
         function savePuzzleConfig() {
